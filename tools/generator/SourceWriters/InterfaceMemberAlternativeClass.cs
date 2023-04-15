@@ -24,7 +24,7 @@ namespace generator.SourceWriters
 		// [Obsolete:iserror] for a long time, and we add [Obsolete] to the interface "class".
 		public InterfaceMemberAlternativeClass (InterfaceGen iface, CodeGenerationOptions opt, CodeGeneratorContext context)
 		{
-			var should_obsolete = opt.SupportInterfaceConstants && opt.SupportDefaultInterfaceMethods;
+			var should_obsolete = opt.SupportInterfaceConstants && opt.SupportStaticInterfaceMethods;
 
 			Name = iface.HasManagedName
 				? iface.Name.Substring (1) + "Consts"

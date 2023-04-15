@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Text;
 using Mono.Options;
 
 using Xamarin.Android.Tools.Bytecode;
+using System.Diagnostics;
 
 namespace Xamarin.Android.Tools {
 
@@ -71,6 +72,7 @@ namespace Xamarin.Android.Tools {
 			Log.OnLog = (t, v, m, a) => {
 				Console.Error.WriteLine(m, a);
 			};
+			var sw = Stopwatch.StartNew ();
 			var classPath = new ClassPath () {
 				ApiSource         = "class-parse",
 				AndroidFrameworkPlatform = platform,
@@ -94,6 +96,7 @@ namespace Xamarin.Android.Tools {
 				classPath.SaveXmlDescription (output);
 			if (outputFile != null)
 				output.Close ();
+			Console.WriteLine (	sw.ElapsedMilliseconds.ToString () + "ms");
 		}
 
 		static void DumpFileToXml (ClassPath jar, string file)

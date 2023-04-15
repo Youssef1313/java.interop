@@ -53,6 +53,7 @@ namespace Xamarin.Android.Binder
 		public bool		    SupportNestedInterfaceTypes { get; set; }
 		public bool		    SupportNullableReferenceTypes { get; set; }
 		public bool		    UseLegacyJavaResolver { get; set; }
+		public bool		    UseRestrictToAttributes { get; set; }
 		public bool			UseObsoletedOSPlatformAttributes { get; set; }
 
 		public XmldocStyle		    XmldocStyle { get; set; } = XmldocStyle.IntelliSense;

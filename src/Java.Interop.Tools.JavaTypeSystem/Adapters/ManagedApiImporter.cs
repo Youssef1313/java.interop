@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Java.Interop.Tools.Cecil;
 using Java.Interop.Tools.JavaTypeSystem.Models;
 using Mono.Cecil;

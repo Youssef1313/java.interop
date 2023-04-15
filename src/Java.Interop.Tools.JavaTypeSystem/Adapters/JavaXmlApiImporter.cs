@@ -83,13 +83,13 @@ namespace Java.Interop.Tools.JavaTypeSystem
 			foreach (var elem in package.Elements ()) {
 				switch (elem.Name.LocalName) {
 					case "class":
-						if (elem.XGetAttributeAsBool ("obfuscated"))
+						if (elem.XGetAttributeAsBool ("obfuscated") || elem.XGetAttribute ("name").Contains (".."))
 							continue;
 
 						pkg.Types.Add (ParseClass (pkg, elem));
 						break;
 					case "interface":
-						if (elem.XGetAttributeAsBool ("obfuscated"))
+						if (elem.XGetAttributeAsBool ("obfuscated") || elem.XGetAttribute ("name").Contains (".."))
 							continue;
 
 						pkg.Types.Add (ParseInterface (pkg, elem));
@@ -136,7 +136,8 @@ namespace Java.Interop.Tools.JavaTypeSystem
 						model.Implements.Add (ParseImplements (child));
 						break;
 					case "method":
-						model.Methods.Add (ParseMethod (model, child));
+						if (!child.XGetAttribute ("name").Contains ('$'))
+							model.Methods.Add (ParseMethod (model, child));
 						break;
 				}
 			}
@@ -213,6 +214,8 @@ namespace Java.Interop.Tools.JavaTypeSystem
 			if (element.XGetAttribute ("deprecated-since") is string dep && dep.HasValue ())
 				method.PropertyBag.Add ("deprecated-since", dep);
 
+			if (method.Name.Contains ('$'))
+				Console.WriteLine ();
 			return method;
 		}
 

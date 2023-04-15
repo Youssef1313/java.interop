@@ -540,7 +540,7 @@ namespace MonoDroid.Generation
 			writer.WriteLine ("{0}{1} partial interface {2}{3} {{", indent, @interface.Visibility, @interface.Name,
 				@interface.IsConstSugar (opt) ? string.Empty : @interface.Interfaces.Count == 0 || sb.Length == 0 ? " : " + GetAllInterfaceImplements () : " : " + sb.ToString ());
 
-			if (opt.SupportDefaultInterfaceMethods && (@interface.HasDefaultMethods || @interface.HasStaticMethods))
+			if ((opt.SupportDefaultInterfaceMethods && @interface.HasDefaultMethods) || (opt.SupportStaticInterfaceMethods && @interface.HasStaticMethods))
 				WriteClassHandle (@interface, indent + "\t", @interface.Name);
 
 			WriteInterfaceFields (@interface, indent + "\t");
@@ -741,7 +741,7 @@ namespace MonoDroid.Generation
 				return;
 
 			var staticMethods = @interface.Methods.Where (m => m.IsStatic);
-			var should_obsolete = opt.SupportInterfaceConstants && opt.SupportDefaultInterfaceMethods;
+			var should_obsolete = opt.SupportInterfaceConstants && opt.SupportStaticInterfaceMethods;
 
 			if (@interface.Fields.Any () || staticMethods.Any ()) {
 				string name = @interface.HasManagedName
@@ -1068,7 +1068,11 @@ namespace MonoDroid.Generation
 			}
 
 			if (opt.SupportDefaultInterfaceMethods)
-				foreach (var m in @interface.Methods.Where (m => m.IsInterfaceDefaultMethod || m.IsStatic))
+				foreach (var m in @interface.Methods.Where (m => m.IsInterfaceDefaultMethod))
+					WriteMethod (m, indent, @interface, true);
+
+			if (opt.SupportStaticInterfaceMethods)
+				foreach (var m in @interface.Methods.Where (m => m.IsStatic))
 					WriteMethod (m, indent, @interface, true);
 		}
 
@@ -1078,7 +1082,10 @@ namespace MonoDroid.Generation
 				WritePropertyDeclaration (prop, indent, @interface, @interface.AssemblyQualifiedName + "Invoker");
 
 			if (opt.SupportDefaultInterfaceMethods)
-				WriteImplementedProperties (@interface.Properties.Where (p => p.Getter.IsInterfaceDefaultMethod || p.Getter.IsStatic), indent, false, @interface);
+				WriteImplementedProperties (@interface.Properties.Where (p => p.Getter.IsInterfaceDefaultMethod), indent, false, @interface);
+
+			if (opt.SupportStaticInterfaceMethods)
+				WriteImplementedProperties (@interface.Properties.Where (p => p.Getter.IsStatic), indent, false, @interface);
 		}
 
 		public void WriteInterfacePropertyInvokers (InterfaceGen @interface, IEnumerable<Property> properties, string indent, HashSet<string> members)

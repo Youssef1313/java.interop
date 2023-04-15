@@ -63,6 +63,7 @@ namespace MonoDroid.Generation
 		public int ProductVersion { get; set; }
 		public bool SupportInterfaceConstants { get; set; }
 		public bool SupportDefaultInterfaceMethods { get; set; }
+		public bool SupportStaticInterfaceMethods { get; set; }
 		public bool SupportNestedInterfaceTypes { get; set; }
 		public bool SupportNullableReferenceTypes { get; set; }
 		public bool UseShallowReferencedTypes { get; set; }

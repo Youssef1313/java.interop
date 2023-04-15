@@ -173,7 +173,8 @@ namespace generator.SourceWriters
 
 		void AddClassHandle (InterfaceGen iface, CodeGenerationOptions opt)
 		{
-			if (opt.SupportDefaultInterfaceMethods && (iface.HasDefaultMethods || iface.HasStaticMethods || iface.HasFieldsAsProperties))
+			if ((opt.SupportDefaultInterfaceMethods && (iface.HasDefaultMethods || iface.HasFieldsAsProperties))
+				|| (opt.SupportStaticInterfaceMethods && iface.HasStaticMethods))
 				Fields.Add (new PeerMembersField (opt, iface.RawJniName, iface.Name, true));
 		}
 
@@ -194,10 +195,10 @@ namespace generator.SourceWriters
 			foreach (var prop in iface.Properties.Where (p => !p.Getter.IsStatic && !p.Getter.IsInterfaceDefaultMethod))
 				Properties.Add (new BoundInterfacePropertyDeclaration (iface, prop, iface.AssemblyQualifiedName + "Invoker", opt));
 
-			if (!opt.SupportDefaultInterfaceMethods)
+			if (!opt.SupportDefaultInterfaceMethods && !opt.SupportStaticInterfaceMethods)
 				return;
 
-			var dim_properties = iface.Properties.Where (p => p.Getter.IsInterfaceDefaultMethod || p.Getter.IsStatic);
+			var dim_properties = iface.Properties.Where (p => (opt.SupportDefaultInterfaceMethods && p.Getter.IsInterfaceDefaultMethod) || (opt.SupportStaticInterfaceMethods && p.Getter.IsStatic));
 
 			foreach (var prop in dim_properties) {
 				if (prop.Getter.IsAbstract) {
@@ -234,10 +235,10 @@ namespace generator.SourceWriters
 				Methods.Add (new BoundInterfaceMethodDeclaration (m, iface.AssemblyQualifiedName + "Invoker", opt));
 			}
 
-			if (!opt.SupportDefaultInterfaceMethods)
+			if (!opt.SupportDefaultInterfaceMethods && !opt.SupportStaticInterfaceMethods)
 				return;
 
-			foreach (var method in iface.Methods.Where (m => m.IsInterfaceDefaultMethod || m.IsStatic)) {
+			foreach (var method in iface.Methods.Where (m => (opt.SupportDefaultInterfaceMethods && m.IsInterfaceDefaultMethod) || (opt.SupportStaticInterfaceMethods && m.IsStatic))) {
 				if (!method.IsValid)
 					continue;
 

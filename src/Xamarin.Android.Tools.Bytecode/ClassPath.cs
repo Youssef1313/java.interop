@@ -72,6 +72,7 @@ namespace Xamarin.Android.Tools.Bytecode {
 					using (var entry_stream = entry.Open ())
 					using (var s = new BufferedStream (entry_stream)) {
 						try {
+							//Console.WriteLine (entry.FullName);
 							var c   = new ClassFile (s);
 							Add (c);
 						} catch (Exception e) {
